@@ -11,6 +11,7 @@ import {
   ButtonGroup,
   Button,
 } from '@chakra-ui/react';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const validationSchema = Yup.object({
@@ -23,6 +24,7 @@ const Login = () => {
       .min(6, 'Password too short')
       .max(28, 'Password too long'),
   });
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: { username: '', password: '' },
     validationSchema: validationSchema,
@@ -80,10 +82,10 @@ const Login = () => {
         <FormErrorMessage>{formik.errors.password}</FormErrorMessage>
       </FormControl>
       <ButtonGroup pt="1rem" spacing="1rem">
-        <Button type="submit" colorScheme="teal">
+        <Button type="submit" colorScheme="linkedin">
           Log In
         </Button>
-        <Button>Register</Button>
+        <Button onClick={() => navigate('/register')}>Register</Button>
       </ButtonGroup>
     </VStack>
   );
