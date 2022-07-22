@@ -1,0 +1,25 @@
+{
+	"name": "login-system-boilerplate",
+	"version": "1.0.0",
+	"description": "Login system boilterplate using react and express",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"devClient": "npm start --workspace=packages/client",
+		"devServer": "npm run devStart --workspaces=packages/server"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/limivann/login-system-boilerplate.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/limivann/login-system-boilerplate/issues"
+	},
+	"homepage": "https://github.com/limivann/login-system-boilerplate#readme",
+	"workspaces": [
+		"packages/*"
+	]
+}

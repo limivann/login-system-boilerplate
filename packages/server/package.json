@@ -1,0 +1,19 @@
+{
+	"name": "@login-system-boilerplate/server",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"devStart": "nodemon server.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"dotenv": "^16.0.1",
+		"express": "^4.18.1"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.19"
+	}
+}
