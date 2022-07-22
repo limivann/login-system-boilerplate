@@ -1,6 +1,5 @@
 import React from 'react';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import {
   FormControl,
   FormLabel,
@@ -13,22 +12,10 @@ import {
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
+import { RegistrationSchema } from '@login-system-boilerplate/common';
 
 const Register = () => {
-  const registrationSchema = Yup.object({
-    username: Yup.string()
-      .min(6, 'Username too short')
-      .max(28, 'Username too long')
-      .required('Username required'),
-    password: Yup.string()
-      .required('Password required')
-      .min(6, 'Password too short')
-      .max(28, 'Password too long'),
-    email: Yup.string()
-      .email('Field should contain a valid e-mail')
-      .max(255)
-      .required('E-mail is required'),
-  });
+  const registrationSchema = RegistrationSchema;
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: { username: '', email: '', password: '' },
