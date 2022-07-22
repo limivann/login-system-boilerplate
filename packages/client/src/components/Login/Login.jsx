@@ -30,8 +30,24 @@ const Login = () => {
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       const vals = { ...values };
-      console.log(vals);
       actions.resetForm();
+      try {
+        const res = await fetch('http://localhost:5000/auth/login', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(vals),
+        });
+        if (!res || !res.ok || res.status >= 400) {
+          return;
+        }
+        const data = await res.json();
+        console.log(data);
+      } catch (err) {
+        console.error(err.message);
+      }
     },
   });
   return (
