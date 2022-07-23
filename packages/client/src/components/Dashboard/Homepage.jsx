@@ -4,7 +4,6 @@ import { AccountContext } from '../UserContext';
 
 const Homepage = () => {
   const { user } = useContext(AccountContext);
-  console.log(user);
   return (
     <Box>
       <Heading flexDirection="flex-start" mb="1rem">
