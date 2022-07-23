@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useFormik } from 'formik';
 import {
   FormControl,
@@ -13,10 +13,12 @@ import {
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { RegistrationSchema } from '@login-system-boilerplate/common';
+import { AccountContext } from '../UserContext';
 
 const Register = () => {
   const registrationSchema = RegistrationSchema;
   const navigate = useNavigate();
+  const { setUser } = useContext(AccountContext);
   const formik = useFormik({
     initialValues: { username: '', email: '', password: '' },
     validationSchema: registrationSchema,
@@ -36,7 +38,10 @@ const Register = () => {
           return;
         }
         const data = await res.json();
-        console.log(data);
+        setUser({ ...data });
+        if (data.loggedIn) {
+          navigate('/home');
+        }
       } catch (err) {
         console.error(err.message);
       }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useFormik } from 'formik';
 import {
   FormControl,
@@ -12,10 +12,12 @@ import {
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { SignupFormSchema } from '@login-system-boilerplate/common';
+import { AccountContext } from '../UserContext';
 
 const Login = () => {
   const validationSchema = SignupFormSchema;
   const navigate = useNavigate();
+  const { setUser } = useContext(AccountContext);
   const formik = useFormik({
     initialValues: { email: '', password: '' },
     validationSchema: validationSchema,
@@ -35,7 +37,10 @@ const Login = () => {
           return;
         }
         const data = await res.json();
-        console.log(data);
+        setUser({ ...data });
+        if (data.loggedIn) {
+          navigate('/home');
+        }
       } catch (err) {
         console.error(err.message);
       }
