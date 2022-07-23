@@ -13,6 +13,7 @@ app.use(
 	})
 );
 app.use(express.json());
+
 // ROUTES
 app.use("/auth", authRouter);
 app.get("/", (req, res) => {

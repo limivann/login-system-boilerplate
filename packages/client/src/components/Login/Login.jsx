@@ -17,7 +17,7 @@ const Login = () => {
   const validationSchema = SignupFormSchema;
   const navigate = useNavigate();
   const formik = useFormik({
-    initialValues: { username: '', password: '' },
+    initialValues: { email: '', password: '' },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       const vals = { ...values };
@@ -52,23 +52,21 @@ const Login = () => {
       height="90vh"
     >
       <Heading>Log In</Heading>
-      <FormControl
-        isInvalid={formik.errors.username && formik.touched.username}
-      >
+      <FormControl isInvalid={formik.errors.email && formik.touched.email}>
         <FormLabel fontSize="md" letterSpacing="wider">
-          Username
+          email
         </FormLabel>
         <Input
-          name="username"
-          type="text"
-          placeholder="Enter username"
+          name="email"
+          type="email"
+          placeholder="Enter email"
           autoComplete="off"
           size="lg"
-          value={formik.values.username}
+          value={formik.values.email}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         ></Input>
-        <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
+        <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
       </FormControl>
       <FormControl
         isInvalid={formik.errors.password && formik.touched.password}
