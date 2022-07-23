@@ -58,7 +58,7 @@ const Login = () => {
       justify="center"
       spacing="1rem"
       onSubmit={formik.handleSubmit}
-      height="90vh"
+      height="80vh"
     >
       <Heading>Log In</Heading>
       <Text as="p" color="red.300" fontSize="md">

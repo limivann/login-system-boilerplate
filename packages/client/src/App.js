@@ -6,13 +6,15 @@ import UserContext from './components/UserContext';
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
+      <Box fontSize="xl">
+        <Grid p={3}>
+          <ColorModeSwitcher justifySelf="flex-end" />
+        </Grid>
+        <Box padding={{ base: '1rem 2rem', md: '1rem 4rem' }}>
           <UserContext>
-            <ColorModeSwitcher justifySelf="flex-end" />
             <Views />
           </UserContext>
-        </Grid>
+        </Box>
       </Box>
     </ChakraProvider>
   );
