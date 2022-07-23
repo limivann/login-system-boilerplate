@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import {
   FormControl,
@@ -9,6 +9,7 @@ import {
   FormErrorMessage,
   ButtonGroup,
   Button,
+  Text,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { SignupFormSchema } from '@login-system-boilerplate/common';
@@ -18,6 +19,7 @@ const Login = () => {
   const validationSchema = SignupFormSchema;
   const navigate = useNavigate();
   const { setUser } = useContext(AccountContext);
+  const [errors, setErrors] = useState('');
   const formik = useFormik({
     initialValues: { email: '', password: '' },
     validationSchema: validationSchema,
@@ -38,7 +40,9 @@ const Login = () => {
         }
         const data = await res.json();
         setUser({ ...data });
-        if (data.loggedIn) {
+        if (data.status) {
+          setErrors(data.status);
+        } else if (data.loggedIn) {
           navigate('/home');
         }
       } catch (err) {
@@ -57,6 +61,9 @@ const Login = () => {
       height="90vh"
     >
       <Heading>Log In</Heading>
+      <Text as="p" color="red.300" fontSize="md">
+        {errors}
+      </Text>
       <FormControl isInvalid={formik.errors.email && formik.touched.email}>
         <FormLabel fontSize="md" letterSpacing="wider">
           email

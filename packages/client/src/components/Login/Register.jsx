@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
 import {
   FormControl,
@@ -9,6 +9,7 @@ import {
   FormErrorMessage,
   ButtonGroup,
   Button,
+  Text,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +20,7 @@ const Register = () => {
   const registrationSchema = RegistrationSchema;
   const navigate = useNavigate();
   const { setUser } = useContext(AccountContext);
+  const [errors, setErrors] = useState('');
   const formik = useFormik({
     initialValues: { username: '', email: '', password: '' },
     validationSchema: registrationSchema,
@@ -39,7 +41,9 @@ const Register = () => {
         }
         const data = await res.json();
         setUser({ ...data });
-        if (data.loggedIn) {
+        if (data.status) {
+          setErrors(data.status);
+        } else if (data.loggedIn) {
           navigate('/home');
         }
       } catch (err) {
@@ -58,6 +62,9 @@ const Register = () => {
       height="90vh"
     >
       <Heading>Register</Heading>
+      <Text as="p" color="red.300" fontSize="md">
+        {errors}
+      </Text>
       <FormControl
         isInvalid={formik.errors.username && formik.touched.username}
       >
