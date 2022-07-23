@@ -7,37 +7,50 @@ const {
 const pool = require("../db");
 const bcrypt = require("bcrypt");
 
-router.route("/login").post(validateSignupForm, async (req, res) => {
-	const { email, password } = req.body;
-	try {
-		// check if email exist
-		const emailExistUser = await pool.query(
-			"SELECT * FROM users WHERE user_email = $1",
-			[email]
-		);
-		if (emailExistUser.rowCount === 0) {
+router
+	.route("/login")
+	.get(async (req, res) => {
+		if (req.session.user && req.session.user.user_id) {
+			res.json({ loggedIn: true, username: req.session.user.username });
+		} else {
+			res.json({ loggedIn: false });
+		}
+	})
+	.post(validateSignupForm, async (req, res) => {
+		const { email, password } = req.body;
+		try {
+			// check if email exist
+			const emailExistUser = await pool.query(
+				"SELECT * FROM users WHERE user_email = $1",
+				[email]
+			);
+			if (emailExistUser.rowCount === 0) {
+				return res.json({
+					loggedIn: false,
+					status: "Email or password incorrect",
+				});
+			}
+			// check if password matches
+			const validPassword = await bcrypt.compare(
+				password,
+				emailExistUser.rows[0].passhash
+			);
+			if (!validPassword) {
+				return res.json({ loggedIn: false, status: "Password incorrect" });
+			}
+			req.session.user = {
+				username: emailExistUser.rows[0].user_name,
+				id: emailExistUser.rows[0].user_id,
+			};
 			return res.json({
-				loggedIn: false,
-				status: "Email or password incorrect",
+				loggedIn: true,
+				username: emailExistUser.rows[0].user_name,
 			});
+		} catch (err) {
+			console.log(err.message);
+			return res.json({ loggedIn: false, status: "server error" });
 		}
-		// check if password matches
-		const validPassword = await bcrypt.compare(
-			password,
-			emailExistUser.rows[0].passhash
-		);
-		if (!validPassword) {
-			return res.json({ loggedIn: false, status: "Password incorrect" });
-		}
-		return res.json({
-			loggedIn: true,
-			username: emailExistUser.rows[0].user_name,
-		});
-	} catch (err) {
-		console.log(err.message);
-		return res.json({ loggedIn: false, status: "server error" });
-	}
-});
+	});
 
 router.route("/register").post(validateRegisterForm, async (req, res) => {
 	const { username, email, password } = req.body;
@@ -59,6 +72,10 @@ router.route("/register").post(validateRegisterForm, async (req, res) => {
 			"INSERT INTO users (user_name, user_email, passhash) VALUES ($1, $2, $3) RETURNING *",
 			[username, email, passHash]
 		);
+		req.session.user = {
+			username,
+			id: user.rows[0].user_id,
+		};
 		return res.json({ loggedIn: true, username });
 	} catch (err) {
 		console.error(err.message);
