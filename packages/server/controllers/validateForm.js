@@ -1,12 +1,12 @@
 const {
-	SignupFormSchema,
+	LoginFormSchema,
 	RegistrationSchema,
 } = require("@login-system-boilerplate/common");
 
 const validateSignupForm = async (req, res, next) => {
 	const formData = req.body;
 	try {
-		const validForm = await SignupFormSchema.validate(formData);
+		const validForm = await LoginFormSchema.validate(formData);
 		if (validForm) {
 			console.log("Form is good");
 			next();

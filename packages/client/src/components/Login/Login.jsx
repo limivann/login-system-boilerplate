@@ -12,11 +12,11 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import { SignupFormSchema } from '@login-system-boilerplate/common';
+import { LoginFormSchema } from '@login-system-boilerplate/common';
 import { AccountContext } from '../UserContext';
 
 const Login = () => {
-  const validationSchema = SignupFormSchema;
+  const validationSchema = LoginFormSchema;
   const navigate = useNavigate();
   const { setUser } = useContext(AccountContext);
   const [errors, setErrors] = useState('');

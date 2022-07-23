@@ -1,5 +1,5 @@
 const Yup = require("yup");
-const SignupFormSchema = Yup.object({
+const LoginFormSchema = Yup.object({
 	email: Yup.string()
 		.email("Field should contain a valid e-mail")
 		.max(255)
@@ -25,4 +25,4 @@ const RegistrationSchema = Yup.object({
 		.required("E-mail is required"),
 });
 
-module.exports = { SignupFormSchema, RegistrationSchema };
+module.exports = { LoginFormSchema, RegistrationSchema };
