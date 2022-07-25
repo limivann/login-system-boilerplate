@@ -3,7 +3,7 @@ const {
 	RegistrationSchema,
 } = require("@login-system-boilerplate/common");
 
-const validateSignupForm = async (req, res, next) => {
+module.exports.validateSignupForm = async (req, res, next) => {
 	const formData = req.body;
 	try {
 		const validForm = await LoginFormSchema.validate(formData);
@@ -17,7 +17,7 @@ const validateSignupForm = async (req, res, next) => {
 	}
 };
 
-const validateRegisterForm = async (req, res, next) => {
+module.exports.validateRegisterForm = async (req, res, next) => {
 	const formData = req.body;
 	try {
 		const validForm = await RegistrationSchema.validate(formData);
@@ -30,5 +30,3 @@ const validateRegisterForm = async (req, res, next) => {
 		res.status(422).json({ status: err.message });
 	}
 };
-
-module.exports = { validateSignupForm, validateRegisterForm };

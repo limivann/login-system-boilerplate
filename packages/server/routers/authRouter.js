@@ -9,9 +9,15 @@ const {
 	attemptLogin,
 	attemptRegister,
 } = require("../controllers/authController");
+const { rateLimiter } = require("../controllers/rateLimiter");
 
-router.route("/login").get(getLogin).post(validateSignupForm, attemptLogin);
+router
+	.route("/login")
+	.get(getLogin)
+	.post(validateSignupForm, rateLimiter(10, 5), attemptLogin);
 
-router.route("/register").post(validateRegisterForm, attemptRegister);
+router
+	.route("/register")
+	.post(validateRegisterForm, rateLimiter(10, 10), attemptRegister);
 
 module.exports = router;
