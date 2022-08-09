@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -9,7 +10,7 @@ const { sessionMiddleware } = require("./controllers/sessionMiddleware");
 app.use(helmet());
 app.use(
 	cors({
-		origin: ["http://localhost:3000"],
+		origin: [process.env.CLIENT_URL],
 		credentials: true,
 	})
 );

@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"devClient": "npm start --workspace=packages/client",
-		"devServer": "npm run devStart --workspace=packages/server"
+		"devServer": "npm run devStart --workspace=packages/server",
+		"buildClient": "npm build --workspace=packages/client"
 	},
 	"repository": {
 		"type": "git",
