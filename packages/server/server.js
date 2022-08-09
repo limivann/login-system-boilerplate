@@ -15,6 +15,7 @@ app.use(
 );
 app.use(express.json());
 app.use(sessionMiddleware);
+app.set("trust proxy", 1);
 
 // ROUTES
 app.use("/auth", authRouter);

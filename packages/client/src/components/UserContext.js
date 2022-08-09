@@ -9,9 +9,12 @@ const UserContext = ({ children }) => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await fetch('http://localhost:5000/auth/login', {
-          credentials: 'include',
-        });
+        const res = await fetch(
+          `${process.env.REACT_APP_SERVER_URL}/auth/login`,
+          {
+            credentials: 'include',
+          }
+        );
         if (!res || !res.ok || res.status >= 400) {
           setUser({ loggedIn: false });
           return;

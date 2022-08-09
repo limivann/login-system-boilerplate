@@ -27,14 +27,17 @@ const Login = () => {
       const vals = { ...values };
       actions.resetForm();
       try {
-        const res = await fetch('http://localhost:5000/auth/login', {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(vals),
-        });
+        const res = await fetch(
+          `${process.env.REACT_APP_SERVER_URL}/auth/login`,
+          {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(vals),
+          }
+        );
         if (!res || !res.ok || res.status >= 400) {
           return;
         }
