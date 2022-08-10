@@ -1,4 +1,4 @@
-import { Heading, Text, Box, Stack } from '@chakra-ui/react';
+import { Heading, Text, Box } from '@chakra-ui/react';
 import React, { useContext } from 'react';
 import { AccountContext } from '../UserContext';
 import LogoutButton from './LogoutButton';
