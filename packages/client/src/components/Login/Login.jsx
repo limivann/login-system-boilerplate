@@ -21,7 +21,7 @@ const Login = () => {
   const { setUser } = useContext(AccountContext);
   const [errors, setErrors] = useState('');
   const formik = useFormik({
-    initialValues: { email: '', password: '' },
+    initialValues: { username: '', password: '' },
     validationSchema: validationSchema,
     onSubmit: async (values, actions) => {
       const vals = { ...values };
@@ -67,21 +67,23 @@ const Login = () => {
       <Text as="p" color="red.300" fontSize="md">
         {errors}
       </Text>
-      <FormControl isInvalid={formik.errors.email && formik.touched.email}>
+      <FormControl
+        isInvalid={formik.errors.username && formik.touched.username}
+      >
         <FormLabel fontSize="md" letterSpacing="wider">
-          email
+          Username
         </FormLabel>
         <Input
-          name="email"
-          type="email"
-          placeholder="Enter email"
+          name="username"
+          type="text"
+          placeholder="Enter username"
           autoComplete="off"
           size="lg"
-          value={formik.values.email}
+          value={formik.values.username}
           onChange={formik.handleChange}
           onBlur={formik.handleBlur}
         ></Input>
-        <FormErrorMessage>{formik.errors.email}</FormErrorMessage>
+        <FormErrorMessage>{formik.errors.username}</FormErrorMessage>
       </FormControl>
       <FormControl
         isInvalid={formik.errors.password && formik.touched.password}

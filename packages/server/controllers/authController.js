@@ -10,34 +10,34 @@ module.exports.getLogin = async (req, res) => {
 };
 
 module.exports.attemptLogin = async (req, res) => {
-	const { email, password } = req.body;
+	const { username, password } = req.body;
 	try {
-		// check if email exist
-		const emailExistUser = await pool.query(
-			"SELECT * FROM users WHERE user_email = $1",
-			[email]
+		// check if username exist
+		const usernameExistUser = await pool.query(
+			"SELECT * FROM users WHERE user_name = $1",
+			[username]
 		);
-		if (emailExistUser.rowCount === 0) {
+		if (usernameExistUser.rowCount === 0) {
 			return res.json({
 				loggedIn: false,
-				status: "Email or password incorrect",
+				status: "Username or password incorrect",
 			});
 		}
 		// check if password matches
 		const validPassword = await bcrypt.compare(
 			password,
-			emailExistUser.rows[0].passhash
+			usernameExistUser.rows[0].passhash
 		);
 		if (!validPassword) {
 			return res.json({ loggedIn: false, status: "Password incorrect" });
 		}
 		req.session.user = {
-			username: emailExistUser.rows[0].user_name,
-			id: emailExistUser.rows[0].user_id,
+			username: usernameExistUser.rows[0].user_name,
+			id: usernameExistUser.rows[0].user_id,
 		};
 		return res.json({
 			loggedIn: true,
-			username: emailExistUser.rows[0].user_name,
+			username: usernameExistUser.rows[0].user_name,
 		});
 	} catch (err) {
 		console.log(err.message);
@@ -48,14 +48,23 @@ module.exports.attemptLogin = async (req, res) => {
 module.exports.attemptRegister = async (req, res) => {
 	const { username, email, password } = req.body;
 	try {
+		// check if username exist
+		const usernameExistUser = await pool.query(
+			"SELECT user_name FROM users WHERE user_name = $1",
+			[username]
+		);
+		if (usernameExistUser.rowCount !== 0) {
+			return res.json({ loggedIn: false, status: "Username taken" });
+		}
 		// check if email exist
 		const emailExistUser = await pool.query(
 			"SELECT user_email FROM users WHERE user_email = $1",
 			[email]
 		);
 		if (emailExistUser.rowCount !== 0) {
-			return res.json({ loggedIn: false, status: "Email already exist" });
+			return res.json({ loggedIn: false, status: "Email taken" });
 		}
+
 		// hash password
 		const salt = await bcrypt.genSalt(10);
 		const passHash = await bcrypt.hash(password, salt);
