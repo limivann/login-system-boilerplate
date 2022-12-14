@@ -6,7 +6,7 @@
 
 A react app for authentication and authorization with session cookies using Redis. The server is written using express with the database being postgresql.
 
-Only one method of authentication is being implemented: login using email and password. Will implement JWT auth strategy in near future.
+Authentication strategy - jwt
 
 ## Project Folder Structure
 
