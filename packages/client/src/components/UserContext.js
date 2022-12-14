@@ -4,7 +4,9 @@ import { useNavigate } from 'react-router-dom';
 export const AccountContext = createContext();
 
 const UserContext = ({ children }) => {
-  const [user, setUser] = useState({ loggedIn: null });
+  const [user, setUser] = useState({
+    loggedIn: null,
+  });
   const navigate = useNavigate();
   useEffect(() => {
     async function fetchData() {

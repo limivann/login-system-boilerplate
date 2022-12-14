@@ -4,7 +4,6 @@ const app = express();
 const cors = require("cors");
 const helmet = require("helmet");
 const authRouter = require("./routers/authRouter");
-const { sessionMiddleware } = require("./controllers/sessionMiddleware");
 
 // MIDDLEWARES
 app.use(helmet());
@@ -15,7 +14,6 @@ app.use(
 	})
 );
 app.use(express.json());
-app.use(sessionMiddleware);
 // app.set("trust proxy", 1);
 
 // ROUTES

@@ -1,11 +1,26 @@
 const bcrypt = require("bcrypt");
 const pool = require("../db");
+const jwt = require("jsonwebtoken");
+const { jwtSign, jwtVerify } = require("./jwt/jwtAuth");
+const { serialize } = require("cookie");
+require("dotenv").config();
 
 module.exports.getLogin = async (req, res) => {
-	if (req.session.user && req.session.user.id) {
-		res.json({ loggedIn: true, username: req.session.user.username });
-	} else {
+	// bearer token
+	const cookies = parseCookie(req.headers.cookie);
+	const token = cookies?.token;
+	if (token == undefined) {
 		res.json({ loggedIn: false });
+		return;
+	}
+	try {
+		const decodedToken = await jwtVerify(token, process.env.JWT_SECRET);
+		res.json({ loggedIn: true, token });
+		return;
+	} catch (error) {
+		console.log(error);
+		res.json({ loggedIn: false });
+		return;
 	}
 };
 
@@ -31,14 +46,34 @@ module.exports.attemptLogin = async (req, res) => {
 		if (!validPassword) {
 			return res.json({ loggedIn: false, status: "Password incorrect" });
 		}
-		req.session.user = {
-			username: usernameExistUser.rows[0].user_name,
-			id: usernameExistUser.rows[0].user_id,
-		};
-		return res.json({
-			loggedIn: true,
-			username: usernameExistUser.rows[0].user_name,
-		});
+
+		try {
+			const token = await jwtSign(
+				{
+					username: usernameExistUser.rows[0].user_name,
+					id: usernameExistUser.rows[0].user_id,
+				},
+				process.env.JWT_SECRET,
+				{ expiresIn: "1min" }
+			);
+			// Set httponly cookie, maxage to 60 seconds
+			const serialized = serialize("token", token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+				maxAge: 60 * 60 * 24 * 3600,
+				path: "/",
+			});
+			res.setHeader("Set-Cookie", serialized);
+			res.json({ loggedIn: true, token });
+			return;
+		} catch (error) {
+			console.log(error);
+			res.json({
+				loggedIn: false,
+				status: "smth went wrong, try again later",
+			});
+		}
 	} catch (err) {
 		console.log(err.message);
 		return res.json({ loggedIn: false, status: "server error" });
@@ -74,11 +109,33 @@ module.exports.attemptRegister = async (req, res) => {
 			"INSERT INTO users (user_name, user_email, passhash) VALUES ($1, $2, $3) RETURNING *",
 			[username, email, passHash]
 		);
-		req.session.user = {
-			username,
-			id: user.rows[0].user_id,
-		};
-		return res.json({ loggedIn: true, username });
+		try {
+			const token = await jwtSign(
+				{
+					username,
+					id: user.rows[0].user_id,
+				},
+				process.env.JWT_SECRET,
+				{ expiresIn: "1min" }
+			);
+			// Set httponly cookie, maxage to 60 seconds
+			const serialized = serialize("token", token, {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === "production",
+				sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+				maxAge: 60,
+				path: "/",
+			});
+			res.setHeader("Set-Cookie", serialized);
+			res.json({ loggedIn: true, token });
+			return;
+		} catch (error) {
+			console.log(error);
+			res.json({
+				loggedIn: false,
+				status: "smth went wrong, try again later",
+			});
+		}
 	} catch (err) {
 		console.error(err.message);
 		return res.json({ loggedIn: false, status: "server error" });
@@ -99,3 +156,13 @@ module.exports.attemptLogout = (req, res) => {
 		res.json({ status: "Already log out" });
 	}
 };
+
+// parse cookies
+const parseCookie = str =>
+	str
+		.split(";")
+		.map(v => v.split("="))
+		.reduce((acc, v) => {
+			acc[decodeURIComponent(v[0].trim())] = decodeURIComponent(v[1].trim());
+			return acc;
+		}, {});

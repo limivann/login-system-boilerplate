@@ -22,5 +22,8 @@
 	"homepage": "https://github.com/limivann/login-system-boilerplate#readme",
 	"workspaces": [
 		"packages/*"
-	]
+	],
+	"dependencies": {
+		"jsonwebtoken": "^8.5.1"
+	}
 }
